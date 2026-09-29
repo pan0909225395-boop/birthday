@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>佳佳專屬慶生邀請</title>
+
+  <!-- 引入全螢幕煙火與 EmailJS 函式庫 -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0b0b0e;
+      color: #f1f1f1;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* 浪漫星空背景 - 動態 (18s) */
+    .stars {
+      position: fixed;
+      top: -10%;
+      left: 0;
+      width: 100%;
+      height: 120%;
+      pointer-events: none;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 40px 70px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 90px 40px, #ffb6c1, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 160px 120px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 230px 190px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 300px 60px, #ffb6c1, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 370px 150px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(2px 2px at 450px 80px, #ffffff, rgba(0,0,0,0)),
+        radial-gradient(1.5px 1.5px at 520px 220px, #ffffff, rgba(0,0,0,0));
+      background-repeat: repeat;
+      background-size: 550px 300px;
+      opacity: 0.6;
+      animation: starMove 18s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    @keyframes starMove {
+      0% { transform: translateY(-30px); }
+      100% { transform: translateY(30px); }
+    }
+
+    /* 流星背景容器與樣式（減少數量並放慢頻率） */
+    .night-sky {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .shooting-star {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(-45deg, rgba(255, 255, 255, 0.9), rgba(255, 182, 193, 0));
+      border-radius: 999px;
+      filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.6));
+      animation: tail 10s ease-in-out infinite, shooting 10s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    .shooting-star::before {
+      content: '';
+      position: absolute;
+      top: calc(50% - 1px);
+      right: 0;
+      height: 2px;
+      background: linear-gradient(-45deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+      transform: translateX(50%) rotate(45deg);
+      border-radius: 100%;
+    }
+
+    /* 第一條流星：位於較上方 */
+    .shooting-star:nth-child(1) {
+      top: 8%;
+      left: 75%;
+      animation-delay: 1s;
+    }
+
+    /* 第二條流星：位於中間偏右，間隔 5 秒後劃過 */
+    .shooting-star:nth-child(2) {
+      top: 22%;
+      left: 60%;
+      animation-delay: 6s;
+    }
+
+    @keyframes tail {
+      0% { width: 0; opacity: 0; }
+      10% { width: 120px; opacity: 0.9; }
+      25% { width: 0; opacity: 0; }
+      100% { width: 0; opacity: 0; }
+    }
+
+    @keyframes shooting {
+      0% { transform: translateX(0) translateY(0) rotate(-35deg); }
+      30% { transform: translateX(-400px) translateY(400px) rotate(-35deg); }
+      100% { transform: translateX(-400px) translateY(400px) rotate(-35deg); }
+    }
+
+    /* 中間質感卡片 */
+    .card {
+      background: rgba(35, 37, 45, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      padding: 36px 28px;
+      width: 90%;
+      max-width: 440px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      z-index: 10;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .cat-img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 3px solid #ff4d6d;
+      box-shadow: 0 0 15px rgba(255, 77, 109, 0.4);
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      color: #ffffff;
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #ff85a1;
+      margin-bottom: 18px;
+      font-weight: 400;
+    }
+
+    .description {
+      font-size: 0.95rem;
+      color: #d1d5db;
+      line-height: 1.8;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .description p {
+      margin-bottom: 4px;
+    }
+
+    /* 第一頁按鈕組 */
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      min-height: 60px;
+      position: relative;
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      outline: none;
+      transition: transform 0.15s ease-out, background-color 0.2s, box-shadow 0.2s;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn-yes {
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+      z-index: 12;
+    }
+
+    .btn-yes:hover {
+      box-shadow: 0 6px 20px rgba(255, 77, 109, 0.6);
+    }
+
+    .btn-no {
+      background-color: #4b5563;
+      color: #e5e7eb;
+      z-index: 11;
+      position: relative;
+      transition: transform 0.15s ease-out, left 0.15s ease-out, top 0.15s ease-out;
+    }
+
+    .hint-text {
+      margin-top: 18px;
+      font-size: 0.9rem;
+      color: #ff85a1;
+      height: 24px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .date-label {
+      text-align: left;
+      font-size: 0.9rem;
+      color: #ff85a1;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .select-box {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background-color: #1f2937;
+      color: #ffffff;
+      font-size: 1rem;
+      margin-bottom: 24px;
+      outline: none;
+      cursor: pointer;
+      text-align: left;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    .select-box option {
+      background-color: #1f2937;
+      color: #ffffff;
+    }
+
+    .btn-confirm-pink {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #e879f9, #f43f5e);
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
+      transition: all 0.2s;
+    }
+
+    /* 信封造型卡片 */
+    .letter-box {
+      background: rgba(255, 255, 255, 0.95);
+      color: #333333;
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: left;
+      position: relative;
+      margin-top: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .envelope-header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    /* 放大信封 Emoji 圖案 (3.8rem) */
+    .envelope-icon {
+      font-size: 3.8rem;
+      line-height: 1;
+    }
+
+    .letter-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 12px;
+    }
+
+    .letter-content p {
+      font-size: 0.92rem;
+      color: #4b5563;
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+
+    .btn-see-you {
+      display: block;
+      margin-left: auto;
+      margin-top: 15px;
+      background: linear-gradient(135deg, #f43f5e, #fb7185);
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+      transition: transform 0.2s;
+    }
+
+    .btn-see-you:hover {
+      transform: scale(1.05);
+    }
+
+    .btn-reselect {
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      font-size: 0.85rem;
+      margin-top: 16px;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* 成功預約彈窗 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #1f2937;
+      border-radius: 20px;
+      padding: 30px 24px;
+      text-align: center;
+      max-width: 320px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.7);
+    }
+
+    .modal-content h2 {
+      color: #ff758f;
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+
+    .modal-content p {
+      color: #e5e7eb;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      white-space: pre-line;
+    }
+
+    .modal-btn {
+      background: #ff4d6d;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stars"></div>
+
+  <!-- 流星特效圖層（調整為 2 條偶爾出現） -->
+  <div class="night-sky">
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+  </div>
+
+  <!-- 第一頁：邀請函 -->
+  <div class="card" id="page1">
+    <img src="0.jpg" alt="貓咪照片" class="cat-img" onerror="this.src='https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300'">
+    
+    <h1>要不要跟我一起慶生？</h1>
+    
+    <div class="description">
+      <p>佳佳妳生日馬上要到了</p>
+      <p>我生日那天有妳陪我一起做蛋糕我覺得很開心</p>
+      <p>這次我也想幫妳過生日，一起做甜點吧</p>
+      <p>不確定當天要不要跟家人或朋友，所以給妳選要哪天~</p>
+    </div>
+
+    <div class="btn-group" id="btnGroup">
+      <button class="btn btn-yes" id="yesBtn" onclick="goToPage2()">好！一起去吧🎂</button>
+      <button class="btn btn-no" id="noBtn" onclick="handleNoClick()">再想想看</button>
+    </div>
+
+    <div class="hint-text" id="hintText"></div>
+  </div>
+
+  <!-- 第二頁：選擇日期 -->
+  <div class="card page" id="page2">
+    <div style="font-size: 2.2rem; margin-bottom: 8px;">📅🐾</div>
+    
+    <h1>請選擇你可以的一天？</h1>
+    <div class="subtitle">(兩天的時間各不同 行程也有點不同哦)</div>
+    
+    <div class="date-label">選一天 🗓️</div>
+    <select class="select-box" id="dateSelect">
+      <option value="10/1">10/1</option>
+      <option value="10/2">10/2</option>
+    </select>
+
+    <button class="btn-confirm-pink" onclick="confirmDate()">就這天</button>
+  </div>
+
+  <!-- 第三頁：10/1 專屬信封頁面 -->
+  <div class="card page" id="page3-1001" style="background: rgba(243, 244, 246, 0.92); color: #1f2937;">
+    <div class="envelope-header">
+      <div class="envelope-icon">✉</div>
+    </div>
+    
+    <div class="letter-box">
+      <div class="letter-title">給願意把前一天留給我的妳：</div>
+      <div class="letter-content">
+        <p>很開心妳沒有拒絕我的邀約，雖然也沒有拒絕可以按就是了哈哈哈</p>
+        <p>那天不用想太多，準備好之後我下午開車去接妳🚗</p>
+        <p>至於做完蛋糕後要去哪、吃什麼不用想太多</p>
+        <p>ok的話就按右下角送出吧</p>
+      </div>
+
+      <button class="btn-see-you" onclick="submitReservation('10/1')">到時候見</button>
+    </div>
+
+    <button class="btn-reselect" onclick="backToPage2()">再看一次</button>
+  </div>
+
+  <!-- 第四頁：10/2 專屬信封頁面 -->
+  <div class="card page" id="page3-1002" style="background: rgba(243, 244, 246, 0.92); color: #1f2937;">
+    <div class="envelope-header">
+      <div class="envelope-icon">✉️</div>
+    </div>
+    
+    <div class="letter-box">
+      <div class="letter-title">給願意把當天留給我的妳：</div>
+      <div class="letter-content">
+        <p>歐吼 當天妳是ok啊 </p>
+        <p>很開心當天晚上有留時間給我</p>
+        <p>我下班後我們就直接約店家吧 </p>
+        <p>至於做完後要去哪、吃什麼不用想太多</p>
+        <p>我們可以找個地方吃飯吃蛋糕然後 乾杯！</p>
+        <p>ok的話就按右下角送出吧</p>
+      </div>
+
+      <button class="btn-see-you" onclick="submitReservation('10/2')">到時候見</button>
+    </div>
+
+    <button class="btn-reselect" onclick="backToPage2()">再看一次</button>
+  </div>
+
+  <!-- 成功預約彈窗 -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-content">
+      <h2>🎉 預約成功！</h2>
+      <p id="modalMsg">太棒了！通知已經寄出囉，到時候見</p>
+      <button class="modal-btn" onclick="closeModal()">太好了！</button>
+    </div>
+  </div>
+
+  <script>
+    // 初始化 EmailJS
+    (function(){
+      emailjs.init("lfbXrnJi_u_qdX2ev"); 
+    })();
+
+    let noClickCount = 0;
+    let yesScale = 1;
+    let noScale = 1;
+
+    const hints = [
+      "按太快了哦 再考慮一下",
+      "這次甜點菜單不錯哦",
+      "直接按紅色了啦！",
+      "再想想我原地爆炸",
+      "點不到了吧",
+      "啊哈 看來只能答應了"
+    ];
+
+    function handleNoClick() {
+      const noBtn = document.getElementById('noBtn');
+      const yesBtn = document.getElementById('yesBtn');
+      const hintText = document.getElementById('hintText');
+
+      if (noClickCount < hints.length) {
+        hintText.innerText = hints[noClickCount];
+      } else {
+        hintText.innerText = hints[hints.length - 1];
+      }
+
+      noClickCount++;
+
+      yesScale += 0.15;
+      noScale = Math.max(0.2, noScale - 0.15);
+
+      yesBtn.style.transform = `scale(${yesScale})`;
+      noBtn.style.transform = `scale(${noScale})`;
+
+      const maxX = (window.innerWidth - 100) / 2;
+      const maxY = (window.innerHeight - 100) / 2;
+
+      const randomX = (Math.random() - 0.5) * maxX * 1.5;
+      const randomY = (Math.random() - 0.5) * maxY * 1.5;
+
+      noBtn.style.position = 'fixed';
+      noBtn.style.left = `calc(50% + ${randomX}px)`;
+      noBtn.style.top = `calc(65% + ${randomY}px)`;
+    }
+
+    function goToPage2() {
+      document.getElementById('page1').style.display = 'none';
+      document.getElementById('page2').style.display = 'block';
+    }
+
+    function confirmDate() {
+      const selectedDate = document.getElementById('dateSelect').value;
+      document.getElementById('page2').style.display = 'none';
+
+      if (selectedDate === '10/1') {
+        document.getElementById('page3-1001').style.display = 'block';
+      } else if (selectedDate === '10/2') {
+        document.getElementById('page3-1002').style.display = 'block';
+      }
+    }
+
+    function backToPage2() {
+      document.getElementById('page3-1001').style.display = 'none';
+      document.getElementById('page3-1002').style.display = 'none';
+      document.getElementById('page2').style.display = 'block';
+    }
+
+    /* 點擊到時候見發送通知與爆發煙火 */
+    function submitReservation(dateChosen) {
+      // 1. 放煙火效果
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+
+      // 2. 寄送信件給 EmailJS
+      emailjs.send("service_4dj7pxc", "template_wi1bhzc", {
+        chosen_date: dateChosen,
+        message: "佳佳已經在慶生網站選擇了日期！"
+      }).then(function(response) {
+        console.log('SUCCESS!', response.status, response.text);
+      }, function(error) {
+        console.error('FAILED...', error);
+      });
+
+      // 3. 顯示預約成功視窗
+      document.getElementById('modalMsg').innerText = `佳佳已成功預約 ${dateChosen} 慶生行程！🎉\n通知信已發送給版主，到時候見`;
+      document.getElementById('successModal').style.display = 'flex';
+    }
+
+    /* 點擊太好了！關閉彈窗並回到首頁 (重置所有狀態) */
+    function closeModal() {
+      // 關閉彈窗
+      document.getElementById('successModal').style.display = 'none';
+
+      // 隱藏所有後續頁面，顯示第一頁
+      document.getElementById('page2').style.display = 'none';
+      document.getElementById('page3-1001').style.display = 'none';
+      document.getElementById('page3-1002').style.display = 'none';
+      document.getElementById('page1').style.display = 'block';
+
+      // 重置按鈕狀態與提示
+      noClickCount = 0;
+      yesScale = 1;
+      noScale = 1;
+
+      const noBtn = document.getElementById('noBtn');
+      const yesBtn = document.getElementById('yesBtn');
+
+      yesBtn.style.transform = 'scale(1)';
+      noBtn.style.transform = 'scale(1)';
+      noBtn.style.position = 'relative';
+      noBtn.style.left = 'auto';
+      noBtn.style.top = 'auto';
+
+      document.getElementById('hintText').innerText = '';
+    }
+  </script>
+</body>
+</html>
