@@ -556,12 +556,12 @@
       </div>
 
       <!-- 專屬私人留言欄位 -->
-      <div class="note-area">
+      <div class="note-area" id="noteArea">
         <label for="userNote">留言板（選填）：</label>
-        <textarea id="userNote" class="note-input" placeholder="有什麼想對我說的話，或有想去的地方嗎？"></textarea>
+        <textarea id="userNote" class="note-input" placeholder="有什麼想對我說的話，或有想去的地方？"></textarea>
       </div>
 
-      <button class="btn-see-you" onclick="submitReservation()">到時候見</button>
+      <button class="btn-see-you" id="seeYouBtn" onclick="submitReservation()">到時候見</button>
     </div>
 
     <button class="btn-reselect" onclick="backToPage2()">再看一次</button>
@@ -651,6 +651,8 @@
 
       const letterTitle = document.getElementById('letterTitle');
       const letterContent = document.getElementById('letterContent');
+      const noteArea = document.getElementById('noteArea');
+      const seeYouBtn = document.getElementById('seeYouBtn');
 
       /* 根據日期動態替換信封內容 */
       if (selectedDateVal === '10/1') {
@@ -661,6 +663,8 @@
           <p>至於做完蛋糕後要去哪、吃什麼不用想太多</p>
           <p>ok的話就按右下角送出吧</p>
         `;
+        noteArea.style.display = 'block';
+        seeYouBtn.style.display = 'block';
       } else if (selectedDateVal === '10/2') {
         letterTitle.innerText = "給願意把當天留給我的妳：";
         letterContent.innerHTML = `
@@ -671,14 +675,26 @@
           <p>我們可以找個地方吃飯吃蛋糕然後 乾杯！</p>
           <p>ok的話就按右下角送出吧</p>
         `;
+        noteArea.style.display = 'block';
+        seeYouBtn.style.display = 'block';
+      } else if (selectedDateVal === '10/3') {
+        letterTitle.innerText = "給點選 10/3 的妳：";
+        letterContent.innerHTML = `
+          <p>這一天我不行啊啊啊</p>
+          <p>請點選其他天吧！按下面『再看一次』重新選擇喔～</p>
+        `;
+        noteArea.style.display = 'none';
+        seeYouBtn.style.display = 'none';
       } else {
         letterTitle.innerText = `給願意把 ${selectedDateVal} 留給我的妳：`;
         letterContent.innerHTML = `
-          <p>很開心妳願意安排這一天跟我一起過生日！</p>
-          <p>那天不用想太多，時間行程我都會準備好，放鬆心情來玩就好囉～</p>
-          <p>我們可以找個好地方做甜點、吃飯，祝妳生日快樂！</p>
+          <p>很開心妳願意安排這一天跟我一起過！</p>
+          <p>那天不用想太多，時間行程我會準備好，放鬆心情就好囉</p>
+          <p>找個地方做甜點、吃飯、讓妳有個快樂的生日</p>
           <p>ok的話就按右下角送出吧</p>
         `;
+        noteArea.style.display = 'block';
+        seeYouBtn.style.display = 'block';
       }
     }
 
