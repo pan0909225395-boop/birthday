@@ -58,7 +58,7 @@
       100% { transform: translateY(30px); }
     }
 
-    /* 流星背景容器與樣式（減少數量並放慢頻率） */
+    /* 流星特效圖層 */
     .night-sky {
       position: fixed;
       top: 0;
@@ -94,14 +94,12 @@
       border-radius: 100%;
     }
 
-    /* 第一條流星：位於較上方 */
     .shooting-star:nth-child(1) {
       top: 8%;
       left: 75%;
       animation-delay: 1s;
     }
 
-    /* 第二條流星：位於中間偏右，間隔 5 秒後劃過 */
     .shooting-star:nth-child(2) {
       top: 22%;
       left: 60%;
@@ -127,7 +125,7 @@
       border: 1px solid rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(12px);
       border-radius: 24px;
-      padding: 36px 28px;
+      padding: 32px 24px;
       width: 90%;
       max-width: 440px;
       text-align: center;
@@ -138,17 +136,17 @@
     }
 
     .cat-img {
-      width: 150px;
-      height: 150px;
+      width: 140px;
+      height: 140px;
       object-fit: cover;
       border-radius: 50%;
       border: 3px solid #ff4d6d;
       box-shadow: 0 0 15px rgba(255, 77, 109, 0.4);
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       color: #ffffff;
       margin-bottom: 8px;
       font-weight: 700;
@@ -158,15 +156,15 @@
     .subtitle {
       font-size: 0.85rem;
       color: #ff85a1;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       font-weight: 400;
     }
 
     .description {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       color: #d1d5db;
       line-height: 1.8;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       text-align: center;
     }
 
@@ -174,7 +172,6 @@
       margin-bottom: 4px;
     }
 
-    /* 第一頁按鈕組 */
     .btn-group {
       display: flex;
       justify-content: center;
@@ -230,35 +227,63 @@
       display: none;
     }
 
-    .date-label {
-      text-align: left;
-      font-size: 0.9rem;
-      color: #ff85a1;
-      margin-bottom: 6px;
+    /* 月曆整體容器 */
+    .calendar-container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .calendar-header {
+      font-size: 1.1rem;
       font-weight: 600;
+      color: #ff85a1;
+      margin-bottom: 12px;
     }
 
-    .select-box {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background-color: #1f2937;
-      color: #ffffff;
-      font-size: 1rem;
-      margin-bottom: 24px;
-      outline: none;
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .weekday {
+      font-size: 0.75rem;
+      color: #9ca3af;
+      font-weight: 600;
+      padding-bottom: 6px;
+    }
+
+    .day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      border-radius: 10px;
       cursor: pointer;
-      text-align: left;
-      appearance: none;
-      background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      transition: all 0.2s;
     }
 
-    .select-box option {
-      background-color: #1f2937;
+    .day:hover {
+      background: rgba(255, 77, 109, 0.3);
+    }
+
+    .day.empty {
+      background: transparent;
+      cursor: default;
+    }
+
+    .day.selected {
+      background: linear-gradient(135deg, #ff4d6d, #ff758f);
       color: #ffffff;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(255, 77, 109, 0.6);
+      transform: scale(1.05);
     }
 
     .btn-confirm-pink {
@@ -292,7 +317,6 @@
       margin-bottom: 12px;
     }
 
-    /* 放大信封 Emoji 圖案 (3.8rem) */
     .envelope-icon {
       font-size: 3.8rem;
       line-height: 1;
@@ -395,7 +419,7 @@
 
   <div class="stars"></div>
 
-  <!-- 流星特效圖層（調整為 2 條偶爾出現） -->
+  <!-- 流星特效圖層 -->
   <div class="night-sky">
     <div class="shooting-star"></div>
     <div class="shooting-star"></div>
@@ -411,7 +435,7 @@
       <p>佳佳妳生日馬上要到了</p>
       <p>我生日那天有妳陪我一起做蛋糕我覺得很開心</p>
       <p>這次我也想幫妳過生日，一起做甜點吧</p>
-      <p>不確定當天要不要跟家人或朋友，所以給妳選要哪天~</p>
+      <p>不確定妳哪一天方便，在月曆點選妳方便的一天吧～</p>
     </div>
 
     <div class="btn-group" id="btnGroup">
@@ -422,61 +446,82 @@
     <div class="hint-text" id="hintText"></div>
   </div>
 
-  <!-- 第二頁：選擇日期 -->
+  <!-- 第二頁：月曆選擇日期 -->
   <div class="card page" id="page2">
-    <div style="font-size: 2.2rem; margin-bottom: 8px;">📅🐾</div>
+    <div style="font-size: 2rem; margin-bottom: 6px;">📅🐾</div>
     
     <h1>請選擇你可以的一天？</h1>
-    <div class="subtitle">(兩天的時間各不同 行程也有點不同哦)</div>
+    <div class="subtitle">(點擊月曆選一天吧)</div>
     
-    <div class="date-label">選一天 🗓️</div>
-    <select class="select-box" id="dateSelect">
-      <option value="10/1">10/1</option>
-      <option value="10/2">10/2</option>
-    </select>
+    <!-- 互動月曆 -->
+    <div class="calendar-container">
+      <div class="calendar-header">2026 年 10 月</div>
+      <div class="calendar-grid">
+        <div class="weekday">日</div>
+        <div class="weekday">一</div>
+        <div class="weekday">二</div>
+        <div class="weekday">三</div>
+        <div class="weekday">四</div>
+        <div class="weekday">五</div>
+        <div class="weekday">六</div>
+
+        <!-- 空白填補 (2026/10/1 是星期四) -->
+        <div class="day empty"></div>
+        <div class="day empty"></div>
+        <div class="day empty"></div>
+        <div class="day empty"></div>
+
+        <!-- 日期 1 ~ 31 -->
+        <div class="day" onclick="selectDate(this, '10/1')">1</div>
+        <div class="day" onclick="selectDate(this, '10/2')">2</div>
+        <div class="day" onclick="selectDate(this, '10/3')">3</div>
+        <div class="day" onclick="selectDate(this, '10/4')">4</div>
+        <div class="day" onclick="selectDate(this, '10/5')">5</div>
+        <div class="day" onclick="selectDate(this, '10/6')">6</div>
+        <div class="day" onclick="selectDate(this, '10/7')">7</div>
+        <div class="day" onclick="selectDate(this, '10/8')">8</div>
+        <div class="day" onclick="selectDate(this, '10/9')">9</div>
+        <div class="day" onclick="selectDate(this, '10/10')">10</div>
+        <div class="day" onclick="selectDate(this, '10/11')">11</div>
+        <div class="day" onclick="selectDate(this, '10/12')">12</div>
+        <div class="day" onclick="selectDate(this, '10/13')">13</div>
+        <div class="day" onclick="selectDate(this, '10/14')">14</div>
+        <div class="day" onclick="selectDate(this, '10/15')">15</div>
+        <div class="day" onclick="selectDate(this, '10/16')">16</div>
+        <div class="day" onclick="selectDate(this, '10/17')">17</div>
+        <div class="day" onclick="selectDate(this, '10/18')">18</div>
+        <div class="day" onclick="selectDate(this, '10/19')">19</div>
+        <div class="day" onclick="selectDate(this, '10/20')">20</div>
+        <div class="day" onclick="selectDate(this, '10/21')">21</div>
+        <div class="day" onclick="selectDate(this, '10/22')">22</div>
+        <div class="day" onclick="selectDate(this, '10/23')">23</div>
+        <div class="day" onclick="selectDate(this, '10/24')">24</div>
+        <div class="day" onclick="selectDate(this, '10/25')">25</div>
+        <div class="day" onclick="selectDate(this, '10/26')">26</div>
+        <div class="day" onclick="selectDate(this, '10/27')">27</div>
+        <div class="day" onclick="selectDate(this, '10/28')">28</div>
+        <div class="day" onclick="selectDate(this, '10/29')">29</div>
+        <div class="day" onclick="selectDate(this, '10/30')">30</div>
+        <div class="day" onclick="selectDate(this, '10/31')">31</div>
+      </div>
+    </div>
 
     <button class="btn-confirm-pink" onclick="confirmDate()">就這天</button>
   </div>
 
-  <!-- 第三頁：10/1 專屬信封頁面 -->
-  <div class="card page" id="page3-1001" style="background: rgba(243, 244, 246, 0.92); color: #1f2937;">
-    <div class="envelope-header">
-      <div class="envelope-icon">✉</div>
-    </div>
-    
-    <div class="letter-box">
-      <div class="letter-title">給願意把前一天留給我的妳：</div>
-      <div class="letter-content">
-        <p>很開心妳沒有拒絕我的邀約，雖然也沒有拒絕可以按就是了哈哈哈</p>
-        <p>那天不用想太多，準備好之後我下午開車去接妳🚗</p>
-        <p>至於做完蛋糕後要去哪、吃什麼不用想太多</p>
-        <p>ok的話就按右下角送出吧</p>
-      </div>
-
-      <button class="btn-see-you" onclick="submitReservation('10/1')">到時候見</button>
-    </div>
-
-    <button class="btn-reselect" onclick="backToPage2()">再看一次</button>
-  </div>
-
-  <!-- 第四頁：10/2 專屬信封頁面 -->
-  <div class="card page" id="page3-1002" style="background: rgba(243, 244, 246, 0.92); color: #1f2937;">
+  <!-- 第三頁：動態信封頁面 -->
+  <div class="card page" id="page3" style="background: rgba(243, 244, 246, 0.92); color: #1f2937;">
     <div class="envelope-header">
       <div class="envelope-icon">✉️</div>
     </div>
     
     <div class="letter-box">
-      <div class="letter-title">給願意把當天留給我的妳：</div>
-      <div class="letter-content">
-        <p>歐吼 當天妳是ok啊 </p>
-        <p>很開心當天晚上有留時間給我</p>
-        <p>我下班後我們就直接約店家吧 </p>
-        <p>至於做完後要去哪、吃什麼不用想太多</p>
-        <p>我們可以找個地方吃飯吃蛋糕然後 乾杯！</p>
-        <p>ok的話就按右下角送出吧</p>
+      <div class="letter-title" id="letterTitle">給願意留時間給我的妳：</div>
+      <div class="letter-content" id="letterContent">
+        <!-- 信封內容會根據選取的日期動態切換 -->
       </div>
 
-      <button class="btn-see-you" onclick="submitReservation('10/2')">到時候見</button>
+      <button class="btn-see-you" onclick="submitReservation()">到時候見</button>
     </div>
 
     <button class="btn-reselect" onclick="backToPage2()">再看一次</button>
@@ -500,6 +545,7 @@
     let noClickCount = 0;
     let yesScale = 1;
     let noScale = 1;
+    let selectedDateVal = null;
 
     const hints = [
       "按太快了哦 再考慮一下",
@@ -545,25 +591,64 @@
       document.getElementById('page2').style.display = 'block';
     }
 
-    function confirmDate() {
-      const selectedDate = document.getElementById('dateSelect').value;
-      document.getElementById('page2').style.display = 'none';
+    /* 月曆選擇邏輯 */
+    function selectDate(element, dateStr) {
+      const allDays = document.querySelectorAll('.day');
+      allDays.forEach(d => d.classList.remove('selected'));
 
-      if (selectedDate === '10/1') {
-        document.getElementById('page3-1001').style.display = 'block';
-      } else if (selectedDate === '10/2') {
-        document.getElementById('page3-1002').style.display = 'block';
+      element.classList.add('selected');
+      selectedDateVal = dateStr;
+    }
+
+    function confirmDate() {
+      if (!selectedDateVal) {
+        alert('請先在月曆上點選一個日期喔！');
+        return;
+      }
+
+      document.getElementById('page2').style.display = 'none';
+      document.getElementById('page3').style.display = 'block';
+
+      const letterTitle = document.getElementById('letterTitle');
+      const letterContent = document.getElementById('letterContent');
+
+      /* 根據日期動態替換信封內容 */
+      if (selectedDateVal === '10/1') {
+        letterTitle.innerText = "給願意把前一天留給我的妳：";
+        letterContent.innerHTML = `
+          <p>很開心妳沒有拒絕我的邀約，雖然也沒有拒絕可以按就是了哈哈哈</p>
+          <p>那天不用想太多，準備好之後我下午會去接妳🚗</p>
+          <p>至於做完蛋糕後要去哪、吃什麼不用想太多</p>
+          <p>ok的話就按右下角送出吧</p>
+        `;
+      } else if (selectedDateVal === '10/2') {
+        letterTitle.innerText = "給願意把當天留給我的妳：";
+        letterContent.innerHTML = `
+          <p>歐吼 當天妳是ok啊 </p>
+          <p>很開心當天晚上有留時間給我</p>
+          <p>我們就直接約店家吧 </p>
+          <p>至於做完後要去哪、吃什麼不用想太多</p>
+          <p>我們可以找個地方吃飯吃蛋糕然後 乾杯！</p>
+          <p>ok的話就按右下角送出吧</p>
+        `;
+      } else {
+        letterTitle.innerText = `給願意把 ${selectedDateVal} 留給我的妳：`;
+        letterContent.innerHTML = `
+          <p>很開心妳願意安排這一天跟我一起過生日！</p>
+          <p>那天不用想太多，時間行程我都會準備好，放鬆心情來玩就好囉～</p>
+          <p>我們可以找個好地方做甜點、吃飯，祝妳生日快樂！</p>
+          <p>ok的話就按右下角送出吧</p>
+        `;
       }
     }
 
     function backToPage2() {
-      document.getElementById('page3-1001').style.display = 'none';
-      document.getElementById('page3-1002').style.display = 'none';
+      document.getElementById('page3').style.display = 'none';
       document.getElementById('page2').style.display = 'block';
     }
 
     /* 點擊到時候見發送通知與爆發煙火 */
-    function submitReservation(dateChosen) {
+    function submitReservation() {
       // 1. 放煙火效果
       confetti({
         particleCount: 120,
@@ -573,8 +658,8 @@
 
       // 2. 寄送信件給 EmailJS
       emailjs.send("service_4dj7pxc", "template_wi1bhzc", {
-        chosen_date: dateChosen,
-        message: "佳佳已經在慶生網站選擇了日期！"
+        chosen_date: selectedDateVal,
+        message: `佳佳已經在慶生網站選擇了 ${selectedDateVal}！`
       }).then(function(response) {
         console.log('SUCCESS!', response.status, response.text);
       }, function(error) {
@@ -582,25 +667,25 @@
       });
 
       // 3. 顯示預約成功視窗
-      document.getElementById('modalMsg').innerText = `佳佳已成功預約 ${dateChosen} 慶生行程！🎉\n通知信已發送給版主，到時候見`;
+      document.getElementById('modalMsg').innerText = `佳佳已成功預約 ${selectedDateVal} 慶生行程！🎉\n通知信已發送給版主，到時候見`;
       document.getElementById('successModal').style.display = 'flex';
     }
 
     /* 點擊太好了！關閉彈窗並回到首頁 (重置所有狀態) */
     function closeModal() {
-      // 關閉彈窗
       document.getElementById('successModal').style.display = 'none';
 
-      // 隱藏所有後續頁面，顯示第一頁
       document.getElementById('page2').style.display = 'none';
-      document.getElementById('page3-1001').style.display = 'none';
-      document.getElementById('page3-1002').style.display = 'none';
+      document.getElementById('page3').style.display = 'none';
       document.getElementById('page1').style.display = 'block';
 
-      // 重置按鈕狀態與提示
       noClickCount = 0;
       yesScale = 1;
       noScale = 1;
+      selectedDateVal = null;
+
+      const allDays = document.querySelectorAll('.day');
+      allDays.forEach(d => d.classList.remove('selected'));
 
       const noBtn = document.getElementById('noBtn');
       const yesBtn = document.getElementById('yesBtn');
