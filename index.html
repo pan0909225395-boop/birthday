@@ -336,6 +336,40 @@
       margin-bottom: 10px;
     }
 
+    /* 私人留言輸入框欄位 */
+    .note-area {
+      margin-top: 15px;
+      padding-top: 12px;
+      border-top: 1px dashed #d1d5db;
+    }
+
+    .note-area label {
+      display: block;
+      font-size: 0.85rem;
+      color: #ff4d6d;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .note-input {
+      width: 100%;
+      height: 70px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      font-size: 0.88rem;
+      resize: none;
+      outline: none;
+      font-family: inherit;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+
+    .note-input:focus {
+      border-color: #ff4d6d;
+      background-color: #ffffff;
+    }
+
     .btn-see-you {
       display: block;
       margin-left: auto;
@@ -521,6 +555,12 @@
         <!-- 信封內容會根據選取的日期動態切換 -->
       </div>
 
+      <!-- 專屬私人留言欄位 -->
+      <div class="note-area">
+        <label for="userNote">💌 悄悄話（選填）：</label>
+        <textarea id="userNote" class="note-input" placeholder="有什麼想對我說的話，或想吃的甜點嗎？"></textarea>
+      </div>
+
       <button class="btn-see-you" onclick="submitReservation()">到時候見</button>
     </div>
 
@@ -649,24 +689,28 @@
 
     /* 點擊到時候見發送通知與爆發煙火 */
     function submitReservation() {
-      // 1. 放煙火效果
+      // 1. 取得使用者的留言
+      const userNote = document.getElementById('userNote').value.trim();
+      const mailMessage = userNote ? `佳佳選擇了 ${selectedDateVal}！\n\n💬 她的留言：${userNote}` : `佳佳已經在慶生網站選擇了 ${selectedDateVal}！`;
+
+      // 2. 放煙火效果
       confetti({
         particleCount: 120,
         spread: 80,
         origin: { y: 0.6 }
       });
 
-      // 2. 寄送信件給 EmailJS
+      // 3. 寄送信件給 EmailJS (將留言一併寄出)
       emailjs.send("service_4dj7pxc", "template_wi1bhzc", {
         chosen_date: selectedDateVal,
-        message: `佳佳已經在慶生網站選擇了 ${selectedDateVal}！`
+        message: mailMessage
       }).then(function(response) {
         console.log('SUCCESS!', response.status, response.text);
       }, function(error) {
         console.error('FAILED...', error);
       });
 
-      // 3. 顯示預約成功視窗
+      // 4. 顯示預約成功視窗
       document.getElementById('modalMsg').innerText = `佳佳已成功預約 ${selectedDateVal} 慶生行程！🎉\n通知信已發送給版主，到時候見`;
       document.getElementById('successModal').style.display = 'flex';
     }
@@ -683,6 +727,8 @@
       yesScale = 1;
       noScale = 1;
       selectedDateVal = null;
+
+      document.getElementById('userNote').value = '';
 
       const allDays = document.querySelectorAll('.day');
       allDays.forEach(d => d.classList.remove('selected'));
